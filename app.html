@@ -85,7 +85,7 @@
                             placeholder="Rate" aria-label="Interest Rate" required />
                     </div>
                     <div class="text-center">
-                        <button type="button" class="w-50 btn btn-secondary" onclick="getValues()">Calculate</button>
+                        <button type="button" class="w-50 btn btn-primary" onclick="getValues()">Calculate</button>
                     </div>
                     <p>Please enter the loan amount, length of the loan term in months, and the interest rate.</p>
                     <p>The table will change colors for every 25% of the principal paid off, and every 12th month is highlighted.</p>
@@ -93,20 +93,20 @@
             </div>
             <div class="col-lg-9 text-center border-start border-light rounded-end-3 p-3 side-bg">
                 <h3 class="display-5 mb-lg-5">Your Monthly Payments</h3>
-                <h3 class="display-6" id="payment">Dollars</h3>
+                <h3 class="display-6" id="payment"></h3>
                 <div class="h-50 d-flex align-items-end">
                     <table class="mt-5 mt-lg-5 fs-4 w-100 h-25 text-start table-group-divider">
                         <tr>
                             <th>Total Principal</th>
-                            <td id="principal">$100</td>
+                            <td id="principal"></td>
                         </tr>
                         <tr>
                             <th>Total Interest</th>
-                            <td id="interest">$100</td>
+                            <td id="interest"></td>
                         </tr>
                         <tr>
                             <th>Total Cost</th>
-                            <td id="cost">$100</td>
+                            <td id="cost"></td>
                         </tr>
                     </table>
                 </div>
