@@ -49,7 +49,7 @@ function getValues() {
         let mortgageArray = calculateAll(loanAmount, termMonths, interestRate);
     
         displayTitleData(mortgageArray, loanAmount, termMonths)
-        displayValuesPercents(mortgageArray, loanAmount);
+        displayValues(mortgageArray, loanAmount);
     }
 
 
@@ -320,5 +320,32 @@ function displayValuesPercents(mortgageObjectArray, fullLoan) {
 
         tableBody.appendChild(mortgageRow);
     }
+
+}
+
+
+
+function getValuesPercents() {
+    // get inputs
+    let loanAmount = parseInt(document.getElementById('loanAmountInput').value);
+    let termMonths = parseInt(document.getElementById('termMonthsInput').value);
+    let interestRate = parseInt(document.getElementById('interestRateInput').value);
+
+
+    if (isNaN(loanAmount) || isNaN(termMonths) || isNaN(interestRate) || loanAmount <= 0 || termMonths <= 0 || interestRate <= 0) {
+        Swal.fire(
+            {
+                backdrop: false,
+                title: 'Please Enter Valid Numbers',
+            }
+        );
+    } else {
+
+        let mortgageArray = calculateAll(loanAmount, termMonths, interestRate);
+    
+        displayTitleData(mortgageArray, loanAmount, termMonths)
+        displayValuesPercents(mortgageArray, loanAmount);
+    }
+
 
 }
