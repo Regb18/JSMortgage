@@ -83,3 +83,22 @@ footer {
     font-size: 4rem;
     padding-left: .5rem;
 }
+
+
+.theader {
+    position: sticky;
+    top: 0px;  /* 0px if you don't have a navbar, but something is required */
+    background: white !important;
+}
+
+.app-bg {
+    background-color: var(--reg-primary-color);
+}
+
+.side-bg {
+    background-color: var(--reg-dark-color);
+}
+
+.bg-highlight {
+    background-color: var(--reg-secondary-color);
+}

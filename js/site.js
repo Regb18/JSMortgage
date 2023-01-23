@@ -49,7 +49,7 @@ function getValues() {
         let mortgageArray = calculateAll(loanAmount, termMonths, interestRate);
     
         displayTitleData(mortgageArray, loanAmount, termMonths)
-        displayValues(mortgageArray);
+        displayValuesPercents(mortgageArray, loanAmount);
     }
 
 
@@ -248,5 +248,77 @@ function displayTitleData(mortgageObjectArray, fullLoan, months) {
         );
 
 
+
+}
+
+
+function displayValuesPercents(mortgageObjectArray, fullLoan) {
+    let tableBody = document.getElementById('mortgageTableBody');
+    const mortgageTableRowTemplate = document.getElementById('mortgageTableRowTemplate');
+
+    tableBody.innerHTML = "";
+
+    for(let i = 0; i < mortgageObjectArray.length; i++) {
+        let mortgageRow = document.importNode(mortgageTableRowTemplate.content, true);
+        let currentMonth = mortgageObjectArray[i];
+
+        let tableCells = mortgageRow.querySelectorAll('td');
+        let tableRowColor = mortgageRow.querySelector('tr');
+
+
+        if ((i + 1) % 12 == 0) {
+
+            tableRowColor.classList.add('bg-highlight', 'text-dark');
+
+        } else if (currentMonth.remainingBalanceAmount <= fullLoan * .25) {
+
+            tableRowColor.classList.add('table-danger')
+        
+        } else if (currentMonth.remainingBalanceAmount <= fullLoan * .5) {
+
+            tableRowColor.classList.add('app-bg')
+        
+        } else if (currentMonth.remainingBalanceAmount <= fullLoan * .75) {
+
+            tableRowColor.classList.add('side-bg')
+        }
+
+
+
+        tableCells[0].textContent = currentMonth.monthNum;
+        tableCells[1].textContent = currentMonth.paymentAmount.toLocaleString(
+            "en-US", {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2
+            }
+        );
+        tableCells[2].textContent = currentMonth.principalAmount.toLocaleString(
+            "en-US", {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2
+            }
+        );
+        tableCells[3].textContent = currentMonth.interestAmount.toLocaleString(
+            "en-US", {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2
+            }
+        );
+        tableCells[4].textContent = currentMonth.totalInterestAmount.toLocaleString(
+            "en-US", {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2
+            }
+        );
+        tableCells[5].textContent = currentMonth.remainingBalanceAmount.toLocaleString(
+            "en-US", {
+                maximumFractionDigits: 2,
+                minimumFractionDigits: 2
+            }
+        );
+
+
+        tableBody.appendChild(mortgageRow);
+    }
 
 }

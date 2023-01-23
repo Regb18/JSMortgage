@@ -66,60 +66,57 @@
     </header>
 
     <main class="content container">
-        <div class="row bg-info p-3">
-            <div class="col-md-4 border bg-danger">
-                <form class="row row-cols-1 border p-2 g-3 bg-success" action="#">
+        <div class="row app-bg rounded-3">
+            <div class="col-lg-3 border-end border-light">
+                <form class="row row-cols-1 p-2 g-3 mt-0 mb-lg-3" action="#">
                     <div class="col align-items-center d-flex justify-content-center">
-
-                        <label class="form-label w-50 text-center" for="loanAmountInput">Loan Amount</label><input class="form-control w-50" type="number" name="loanAmountInput" id="loanAmountInput"
-                        placeholder="Amount" aria-label="Loan Amount" required />
-                    </div>
-                    <div class="col">
-
+                        <label class="form-label w-50 text-center" for="loanAmountInput">Loan Amount</label>
+                        <input class="form-control w-50" type="number" name="loanAmountInput" id="loanAmountInput"
+                            placeholder="Amount" aria-label="Loan Amount" required />
                     </div>
                     <div class="col align-items-center d-flex justify-content-center">
-                        <label class="form-label" for="termMonthsInput">Term (Months)</label>
-                    </div>
-                    <div class="col">
-                        <input class="form-control" type="number" name="termMonthsInput" id="termMonthsInput" placeholder="Months"
-                            aria-label="Months" required />
-
+                        <label class="form-label w-50  text-center" for="termMonthsInput">Term (Months)</label>
+                        <input class="form-control w-50" type="number" name="termMonthsInput" id="termMonthsInput"
+                            placeholder="Months" aria-label="Months" required />
                     </div>
                     <div class="col align-items-center d-flex justify-content-center">
-                        <label class="form-label" for="interestRateInput">Interest Rate</label>
+                        <label class="form-label w-50 text-center" for="interestRateInput">Interest Rate</label>
+                        <input class="form-control w-50" type="number" step=".1" name="interestRateInput" id="interestRateInput"
+                            placeholder="Rate" aria-label="Interest Rate" required />
                     </div>
-                    <div class="col">
-                        <input class="form-control" type="number" name="interestRateInput" id="interestRateInput" placeholder="Rate"
-                            aria-label="Interest Rate" required />
+                    <div class="text-center">
+                        <button type="button" class="w-50 btn btn-secondary" onclick="getValues()">Calculate</button>
                     </div>
-                    <button type="button" class="btn btn-secondary" onclick="getValues()">Calcuate</button>
+                    <p>Please enter the loan amount, length of the loan term in months, and the interest rate.</p>
+                    <p>The table will change colors for every 25% of the principal paid off, and every 12th month is highlighted.</p>
                 </form>
             </div>
-            <div class="col-md-8 text-center border p-2 bg-primary">
-                <h3 class="mb-4">Your Monthly Payments</h3>
-                <h3 id="payment">Input Dollar Amount</h3>
-                <table class="mt-5">
-                    <tr>
-                        <th>Total Principal</th>
-                        <td id="principal">$100</td>
-                    </tr>
-                    <tr>
-                        <th>Total Interest</th>
-                        <td id="interest">$100</td>
-                    </tr>
-                    <tr>
-                        <th>Total Cost</th>
-                        <td id="cost">$100</td>
-                    </tr>
-                </table>
+            <div class="col-lg-9 text-center border-start border-light rounded-end-3 p-3 side-bg">
+                <h3 class="display-5 mb-lg-5">Your Monthly Payments</h3>
+                <h3 class="display-6" id="payment">Dollars</h3>
+                <div class="h-50 d-flex align-items-end">
+                    <table class="mt-5 mt-lg-5 fs-4 w-100 h-25 text-start table-group-divider">
+                        <tr>
+                            <th>Total Principal</th>
+                            <td id="principal">$100</td>
+                        </tr>
+                        <tr>
+                            <th>Total Interest</th>
+                            <td id="interest">$100</td>
+                        </tr>
+                        <tr>
+                            <th>Total Cost</th>
+                            <td id="cost">$100</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 
 
         <div class="table-responsive">
-
-            <table class="table table-striped">
-                <thead class="">
+            <table class="table table-hover table-striped mt-4">
+                <thead>
                     <tr>
                         <th>Month</th>
                         <th>Payment</th>
@@ -129,7 +126,7 @@
                         <th>Balance</th>
                     </tr>
                 </thead>
-                <tbody id="mortgageTableBody">
+                <tbody class="" id="mortgageTableBody">
                     <!-- template -->
                 </tbody>
             </table>
@@ -172,7 +169,7 @@
 -->
     <!-- Table Row Template -->
     <template id="mortgageTableRowTemplate">
-        <tr>
+        <tr id="mortgageTableRow">
             <td data-id="mortMonth"></td>
             <td data-id="mortPayment"></td>
             <td data-id="mortPrincipal"></td>
@@ -194,7 +191,7 @@
     <!-- Custom JS -->
     <script src="js/site.js"></script>
     <script>
-        
+
     </script>
 </body>
 
