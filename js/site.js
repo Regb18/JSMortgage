@@ -31,7 +31,7 @@ At end each month, Remaining Balance = Previous Remaining Balance - principal pa
 // Inputs - loanAmountInput termMonthsInput interestRateInput
 
 function getValues() {
-    // get inputs
+    // get inputs - change loanAmount & interestRate to parseFloat
     let loanAmount = parseInt(document.getElementById('loanAmountInput').value);
     let termMonths = parseInt(document.getElementById('termMonthsInput').value);
     let interestRate = parseInt(document.getElementById('interestRateInput').value);
@@ -286,36 +286,11 @@ function displayValuesPercents(mortgageObjectArray, fullLoan) {
 
 
         tableCells[0].textContent = currentMonth.monthNum;
-        tableCells[1].textContent = currentMonth.paymentAmount.toLocaleString(
-            "en-US", {
-                maximumFractionDigits: 2,
-                minimumFractionDigits: 2
-            }
-        );
-        tableCells[2].textContent = currentMonth.principalAmount.toLocaleString(
-            "en-US", {
-                maximumFractionDigits: 2,
-                minimumFractionDigits: 2
-            }
-        );
-        tableCells[3].textContent = currentMonth.interestAmount.toLocaleString(
-            "en-US", {
-                maximumFractionDigits: 2,
-                minimumFractionDigits: 2
-            }
-        );
-        tableCells[4].textContent = currentMonth.totalInterestAmount.toLocaleString(
-            "en-US", {
-                maximumFractionDigits: 2,
-                minimumFractionDigits: 2
-            }
-        );
-        tableCells[5].textContent = currentMonth.remainingBalanceAmount.toLocaleString(
-            "en-US", {
-                maximumFractionDigits: 2,
-                minimumFractionDigits: 2
-            }
-        );
+        tableCells[1].textContent = formatAsCurrency(currentMonth.paymentAmount);
+        tableCells[2].textContent = formatAsCurrency(currentMonth.principalAmount);
+        tableCells[3].textContent = formatAsCurrency(currentMonth.interestAmount);
+        tableCells[4].textContent = formatAsCurrency(currentMonth.totalInterestAmount);
+        tableCells[5].textContent = formatAsCurrency(currentMonth.remainingBalanceAmount);
 
 
         tableBody.appendChild(mortgageRow);
@@ -348,4 +323,12 @@ function getValuesPercents() {
     }
 
 
+}
+
+
+function formatAsCurrency(value) {
+    return Number(value).toLocaleString('en-US', {
+        style: "currency",
+        currency: "USD",
+    })
 }
