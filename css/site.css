@@ -117,13 +117,13 @@ footer {
 
 .btn-primary {
     color: white !important;
-    background-color: var(--reg-secondary-color) !important;
-    border-color: var(--reg-secondary-color);
+    background-color: var(--reg-primary-color) !important;
+    border-color: var(--reg-secondary-color) !important;
 }
 
 .btn-primary:hover {
     filter: brightness(1.1) !important;
-    border-color: var(--reg-highlight-color);
+    border-color: var(--reg-highlight-color) !important; 
 }
 
 .btn-primary:active,

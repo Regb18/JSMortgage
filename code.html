@@ -75,24 +75,250 @@
             <div class="col-12 col-lg-8">
                 <pre class="line-numbers">
                     <code class="language-js">
-                        function displayMessage() {
-                            let msg = document.getElementById('message').value;
+                        function getValues() {
+                            // get inputs - change loanAmount & interestRate to parseFloat
+                            let loanAmount = parseFloat(document.getElementById('loanAmountInput').value);
+                            let termMonths = parseInt(document.getElementById('termMonthsInput').value);
+                            let interestRate = parseFloat(document.getElementById('interestRateInput').value);
+                        
+                        
+                            if (isNaN(loanAmount) || isNaN(termMonths) || isNaN(interestRate) || loanAmount <= 0 || termMonths <= 0 || interestRate <= 0) {
+                                Swal.fire(
+                                    {
+                                        backdrop: false,
+                                        title: 'Please Enter Valid Numbers',
+                                    }
+                                );
+                            } else {
+                        
+                                let mortgageArray = calculateAll(loanAmount, termMonths, interestRate);
                             
-                            Swal.fire(
-                                {
-                                    backdrop: false,
-                                    title: 'The Lion's Share',
-                                    text: msg
+                                displayTitleData(mortgageArray, loanAmount, termMonths)
+                                displayValues(mortgageArray, loanAmount);
+                            }
+                        
+                        
+                        }
+                        
+                        
+                        // Total Monthly Payment = (amount loaned) * (rate/1200) / (1 – (1 + rate/1200)(-Number of Months) )
+                        // Remaining Balance before the very first month equals the amount of the loan.
+                        // Interest Payment = Previous Remaining Balance * rate/1200
+                        // Principal Payment = Total Monthly Payment - Interest Payment
+                        // At end each month, Remaining Balance = Previous Remaining Balance - principal payments
+                        
+                        // need to loop through every month
+                        function calculateAll(loanAmount, termMonths, interestRate) {
+                        
+                            // Remaining Balance before the very first month equals the amount of the loan.
+                            let tableData = [];
+                           
+                            let remainingBalance = loanAmount; 
+                            
+                            let totalMonthlyPayment = (loanAmount) * (interestRate/1200) / (1 - (1 + interestRate/1200)**(-termMonths));
+                            let interestPayment = remainingBalance * interestRate/1200;
+                            let totalInterestPayment = 0;
+                            let principalPayment = totalMonthlyPayment - interestPayment;
+                            let principalPaymentSum = 0;
+                        
+                            let i = 1;
+                        
+                            // 1. Month - 1 is 1st month of payment - all the way to last month
+                            // 2. Payment amount
+                            // 3. Principal paid this month
+                            // 4. Interest paid this month
+                            // 5. Total interest paid to date
+                            // 6. remaining loan balance at the end of the month
+                            
+                            for( termMonths; termMonths > 0; termMonths-- ) {
+                                // do the math for each month
+                        
+                                principalPaymentSum = principalPaymentSum + principalPayment;
+                        
+                        
+                                if (remainingBalance - principalPayment <= 0) {
+                                    principalPayment = remainingBalance - interestPayment;
+                                    remainingBalance = 0;
+                                } else {
+                                    remainingBalance = remainingBalance - principalPayment;
                                 }
-                            );
+                                
+                                totalInterestPayment = totalInterestPayment + interestPayment;
+                                
+                                let tableObject = {
+                                    monthNum: i,
+                                    paymentAmount: totalMonthlyPayment,
+                                    principalAmount: principalPayment,
+                                    interestAmount: interestPayment,
+                                    totalInterestAmount: totalInterestPayment,
+                                    remainingBalanceAmount: remainingBalance
+                                }; 
+                        
+                        
+                                interestPayment = remainingBalance * interestRate/1200;
+                                principalPayment = totalMonthlyPayment - interestPayment;
+                                
+                                i++
+                        
+                                tableData.push(tableObject);
+                            }
+                        
+                        
+                            return tableData;
+                        
+                        }
+                        
+                        
+                        
+                        
+                        
+                        function displayValues(mortgageObjectArray) {
+                            let tableBody = document.getElementById('mortgageTableBody');
+                            const mortgageTableRowTemplate = document.getElementById('mortgageTableRowTemplate');
+                        
+                            tableBody.innerHTML = "";
+                        
+                            for(let i = 0; i < mortgageObjectArray.length; i++) {
+                                let mortgageRow = document.importNode(mortgageTableRowTemplate.content, true);
+                                let currentMonth = mortgageObjectArray[i];
+                         
+                                let tableCells = mortgageRow.querySelectorAll('td');
+                        
+                                tableCells[0].textContent = currentMonth.monthNum;
+                                tableCells[1].textContent = formatAsCurrency(currentMonth.paymentAmount);
+                                tableCells[2].textContent = formatAsCurrency(currentMonth.principalAmount);
+                                tableCells[3].textContent = formatAsCurrency(currentMonth.interestAmount);
+                                tableCells[4].textContent = formatAsCurrency(currentMonth.totalInterestAmount);
+                                tableCells[5].textContent = formatAsCurrency(currentMonth.remainingBalanceAmount);
+                        
+                                tableBody.appendChild(mortgageRow);
+                            }
+                        
+                        }
+                        
+                        
+                        // 
+                        // payment, principal, interest, cost
+                        
+                        function displayTitleData(mortgageObjectArray, fullLoan, months) {
+                        
+                        
+                                let payment = mortgageObjectArray[0].paymentAmount;
+                                let lastMonth = months - 1;
+                                let totalInterest = mortgageObjectArray[lastMonth].totalInterestAmount;
+                                let totalCost = fullLoan + totalInterest;
+                        
+                                // Monthly Payment Amount (totalMonthlyPayment)
+                        
+                                // Loan Amount
+                                // Total Interest - array[termMonths - 1]
+                                // Loan Amount + Total Interest
+                            
+                                document.getElementById('payment').textContent = formatAsCurrency(payment)
+                                document.getElementById('principal').textContent = formatAsCurrency(fullLoan)
+                                document.getElementById('interest').textContent = formatAsCurrency(totalInterest)
+                                document.getElementById('cost').textContent = formatAsCurrency(totalCost)
+                        
+                        
+                        
+                        }
+                        
+                        
+                        function displayValuesPercents(mortgageObjectArray, fullLoan) {
+                            let tableBody = document.getElementById('mortgageTableBody');
+                            const mortgageTableRowTemplate = document.getElementById('mortgageTableRowTemplate');
+                        
+                            tableBody.innerHTML = "";
+                        
+                            for(let i = 0; i < mortgageObjectArray.length; i++) {
+                                let mortgageRow = document.importNode(mortgageTableRowTemplate.content, true);
+                                let currentMonth = mortgageObjectArray[i];
+                        
+                                let tableCells = mortgageRow.querySelectorAll('td');
+                                let tableRowColor = mortgageRow.querySelector('tr');
+                        
+                        
+                                if ((i + 1) % 12 == 0) {
+                        
+                                    tableRowColor.classList.add('bg-highlight', 'text-dark');
+                        
+                                } else if (currentMonth.remainingBalanceAmount <= fullLoan * .25) {
+                        
+                                    tableRowColor.classList.add('table-danger')
+                                
+                                } else if (currentMonth.remainingBalanceAmount <= fullLoan * .5) {
+                        
+                                    tableRowColor.classList.add('app-bg')
+                                
+                                } else if (currentMonth.remainingBalanceAmount <= fullLoan * .75) {
+                        
+                                    tableRowColor.classList.add('side-bg')
+                                }
+                        
+                        
+                        
+                                tableCells[0].textContent = currentMonth.monthNum;
+                                tableCells[1].textContent = formatAsCurrency(currentMonth.paymentAmount);
+                                tableCells[2].textContent = formatAsCurrency(currentMonth.principalAmount);
+                                tableCells[3].textContent = formatAsCurrency(currentMonth.interestAmount);
+                                tableCells[4].textContent = formatAsCurrency(currentMonth.totalInterestAmount);
+                                tableCells[5].textContent = formatAsCurrency(currentMonth.remainingBalanceAmount);
+                        
+                        
+                                tableBody.appendChild(mortgageRow);
+                            }
+                        
+                        }
+                        
+                        
+                        
+                        function getValuesPercents() {
+                            // get inputs
+                            let loanAmount = parseInt(document.getElementById('loanAmountInput').value);
+                            let termMonths = parseInt(document.getElementById('termMonthsInput').value);
+                            let interestRate = parseInt(document.getElementById('interestRateInput').value);
+                        
+                        
+                            if (isNaN(loanAmount) || isNaN(termMonths) || isNaN(interestRate) || loanAmount <= 0 || termMonths <= 0 || interestRate <= 0) {
+                                Swal.fire(
+                                    {
+                                        backdrop: false,
+                                        title: 'Please Enter Valid Numbers',
+                                    }
+                                );
+                            } else {
+                        
+                                let mortgageArray = calculateAll(loanAmount, termMonths, interestRate);
+                            
+                                displayTitleData(mortgageArray, loanAmount, termMonths)
+                                displayValuesPercents(mortgageArray, loanAmount);
+                            }
+                        
+                        
+                        }
+                        
+                        
+                        function formatAsCurrency(value) {
+                            return Number(value).toLocaleString('en-US', {
+                                style: "currency",
+                                currency: "USD",
+                            })
                         }
                     </code>
                 </pre>
             </div>
             <div class="col-12 col-lg-4">
-                <p>The code is structured in one function</p>
-                <h5><code>displayMessage()</code></h5>
-                <p>This function displays the message in a Sweet Alert</p>
+                <p>The goal of this app is to give a user monthly data about a mortgage based on the loan amount, rate, and term length in months. There are six numbers we need to output based on these inputs, they are: month number, monthly payment, monthly interest, monthly principal, total interest paid, and the remaining balance of the loan.</p>
+                <h5><code>getValues()</code></h5>
+                <p>The first thing we do in this function is get the inputs from the user and convert them into values we can use in math operations. We use parseFloat for rate and amount so we can get more accurate results. We then make sure that the inputs are all numbers that are greater than zero. If one of those conditions is not met you’ll get an error message and be able to try again otherwise the values will be passed to other functions that will do the heavy lifting in terms of calculations and also display the values.</p>
+                <h5><code>calculateAll()</code></h5>
+                <p>This function does the heavy lifting for this app. All of the math we need is done here in this logic function. As I said above, we need to get 6 values from this function. First we need to declare some variables and use the formula we were given to establish the totalMonthlyPayment and interestPayment. From those two numbers we can get the principalPayment, and the totalInterestPayment and principalPaymentSum will be initialized at 0 since we will add to those each iteration through the for loop. Speaking of, I set the termMonths to be my count in the for loop, and when it is ≤ than 0 the loop will end. Therefore, we get every months data through the loop, since the last value will be array[0]. Inside the loop, we’ll add to the principalPaymentSum every time to through. Next we’ll use an if statement that checks if the remaining balance minus the principal payment is less than 0. This is to ensure our final value in the table isn’t negative. If the condition is false we’ll subtract the principal payment from the remaining balance. Next we’ll add the interest payment for the month to the total interest. And we’ll set our 6 values in the object for the month. The last couple things we’ll do are do some math to set the interest payment for next month, and the principal payment for next month and add to i which signifies our month number for the objects. And we’ll use our tableData array which started off as empty to add in that object.</p>
+                <h5><code>displayValues() and displayValuesPercents()</code></h5>
+                <p>These functions are the same apart from one if statement. This is where we display all of the data with each month and all of its corresponding values having a row and then moving to the next row. We do this by using a template from the html that is appropriately called mortgageTableRowTemplate. This will go into the tableBody variable that is representing the table body on the HTML. Now we set up a for loop to go through every month of data we have and output our 6 values. First thing we’ll do in the loop is use the mortgage row variable to act as an import node for the template we’re using. Basically we need to add that to the template after adding in our data. Set the current month to i in the array so we go from month to month. Then we let tableCells equal the table data values that exist in the mortgage row, so each value will have its own cell. The last variable we add is the tableRowColor which I used to target all of the table rows and change their color depending on the month and amount of the loan that has been paid off. To do that I made an it statement that said if the month divided by 12 gives a remainder of 0 then make the row gold, otherwise if the remaining balance amount at the current month is less than or equal to 25% of the full loan amount the row will be a different color. The same logic is there for 50% and 75% as well, so the 12 months will have top priority and then I had to start with the lower amount for the next if statements so that they take priority over the comparisons for the higher amounts. The last part is to add each value we want to show on the page to a table cell. Since these table cells are all in the mortgage row because of the way we set up the variables, we can append or add the mortgage row to the tableBody and it will display for us.</p>
+                <h5><code>displayTitleData()</code></h5>
+                <p>This function is used to display the monthly payment amount, full loan amount, total interest, and the total cost of the loan. This is the data that shows in the header above the table with monthly data. First things first, we declare a few variables using the parameters we’re getting passed in the function. First, payment is the monthly amount and that equals the zero index of our array, which is the first instance in there. It actually doesn’t matter which one we pick because monthly payments are all the same. Next we take our months subtracted by 1 to get the index of the last value and use that to get the final entry of our total interest which will be the full amount. Finally, we grab our total cost which is the full loan amount plus the total interest. The last part of this function is to display the values on the page using the IDs from the HTML and setting our mortgage data in them.</p>
+                <h5><code>formatAsCurrency()</code></h5>
+                <p>I made this function because I need to format all of the values as USD. So, instead of writing this out for every value, I just made a function and use that inside my display functions.</p>
             </div>
         </div>
 
