@@ -84,7 +84,7 @@ footer {
     list-style-type: none;
 }
 
-.checkList > li i {
+.checkList>li i {
     color: var(--reg-secondary-color);
     padding-right: .5rem;
 }
@@ -97,7 +97,8 @@ footer {
 
 .theader {
     position: sticky;
-    top: 0px;  /* 0px if you don't have a navbar, but something is required */
+    top: 0px;
+    /* 0px if you don't have a navbar, but something is required */
     background: white !important;
 }
 
@@ -123,7 +124,7 @@ footer {
 
 .btn-primary:hover {
     filter: brightness(1.1) !important;
-    border-color: var(--reg-highlight-color) !important; 
+    border-color: var(--reg-highlight-color) !important;
 }
 
 .btn-primary:active,
